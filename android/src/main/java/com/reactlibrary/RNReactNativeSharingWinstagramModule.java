@@ -19,6 +19,7 @@ import android.content.Intent;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.util.Base64;
 import android.view.Display;
@@ -111,7 +112,7 @@ public class RNReactNativeSharingWinstagramModule extends ReactContextBaseJavaMo
     private class RNInstagramShareActivityEventListener extends BaseActivityEventListener {
         @Override
         public void onActivityResult(Activity activity, final int requestCode, final int resultCode, final Intent intent) {
-            Log.d("------------>resultCode", "" + resultCode);
+            // Log.d("------------> resultCode", "" + resultCode);
             if (requestCode == INSTAGRAM_SHARE_REQUEST) {
                 callback.invoke("Image shared successfully with instagram.");
             }
@@ -133,7 +134,7 @@ public class RNReactNativeSharingWinstagramModule extends ReactContextBaseJavaMo
        File media = saveImage(getReactApplicationContext(), fileName, base64str);
 
          if(isAppInstalled("com.instagram.android") == false) {
-           callback.invoke("Sorry, instagram is not installed in your device.");
+           callback.invoke("Sorry, Instagram is not installed in your device.");
          } else {
            if(media.exists()) {
              // Create the new Intent using the 'Send' action.
@@ -143,7 +144,7 @@ public class RNReactNativeSharingWinstagramModule extends ReactContextBaseJavaMo
              share.setType(type);
              share.setPackage("com.instagram.android");
 
-             Uri uri = Uri.fromFile(media);
+             Uri uri = FileProvider.getUriForFile(getCurrentActivity(), getCurrentActivity().getApplicationContext().getPackageName() + ".provider", media);
 
              // Add the URI to the Intent.
              share.putExtra(Intent.EXTRA_STREAM, uri);
